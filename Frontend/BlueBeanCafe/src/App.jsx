@@ -12,6 +12,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
+import CoursePage from "./pages/CoursePage";
 
 function App() {
   const { theme } = useSelector((state) => state);
@@ -28,6 +29,7 @@ function App() {
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgetPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/course/:id" element={<CoursePage />} />
             <Route path="/request-course" element={<RequestCourse />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/about" element={<AboutUs />} />
