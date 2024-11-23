@@ -4,12 +4,13 @@ import { MdDarkMode } from "react-icons/md";
 import { MdSunny } from "react-icons/md";
 import { RiMenuFold4Fill } from "react-icons/ri";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
   const { theme } = useSelector((state) => state);
   const [showSidebar, toggleSidebar] = useState(false);
+  const navigate = useNavigate();
 
   const location = useLocation();
 
@@ -45,64 +46,91 @@ const Header = () => {
           } top-0 z-20`}
         >
           {/* sidebar content */}
-          <div className="dark:text-gray-300 text-gray-800">
-            <div className="text-2xl p-2   text-center font-sans font-bold">
+          <div className="dark:text-gray-300 text-gray-800 h-full">
+            <div className="text-2xl p-2 text-center font-sans font-bold">
               Blue Bean Cafe
             </div>
             <div className="border border-gray-700 border-b border-y-2"></div>
-            <div className="mt-8">
-              <div
-                className={`flex gap-4 p-2 px-4 items-start mt-2 flex-col dark:text-gray-200 text-gray-600`}
-              >
-                <Link
-                  to={"/"}
-                  onClick={handleSidebarToggle}
-                  className={`text-lg font-serif font-semibold text-center ${
-                    isActive("/") ? "text-yellow-500" : ""
-                  }`}
+            <div className="flex flex-col justify-between h-full">
+              <div className="mt-8 h-full flex flex-col gap-96">
+                <div
+                  className={`flex gap-4 p-2 px-4 items-start mt-2 flex-col dark:text-gray-200 text-gray-600`}
                 >
-                  Home
-                </Link>
+                  <Link
+                    to={"/"}
+                    onClick={handleSidebarToggle}
+                    className={`text-lg font-serif font-semibold text-center ${
+                      isActive("/") ? "text-yellow-500" : ""
+                    }`}
+                  >
+                    Home
+                  </Link>
 
-                <Link
-                  to={"/courses"}
-                  onClick={handleSidebarToggle}
-                  className={`text-lg font-serif font-semibold text-center ${
-                    isActive("/courses") ? "text-yellow-500" : ""
-                  }`}
-                >
-                  Browse All Courses
-                </Link>
+                  <Link
+                    to={"/courses"}
+                    onClick={handleSidebarToggle}
+                    className={`text-lg font-serif font-semibold text-center ${
+                      isActive("/courses") ? "text-yellow-500" : ""
+                    }`}
+                  >
+                    Browse All Courses
+                  </Link>
 
-                <Link
-                  to={"request-course"}
-                  onClick={handleSidebarToggle}
-                  className={`text-lg font-serif font-semibold text-center ${
-                    isActive("/request-course") ? "text-yellow-500" : ""
-                  }`}
-                >
-                  Request a Course
-                </Link>
+                  <Link
+                    to={"request-course"}
+                    onClick={handleSidebarToggle}
+                    className={`text-lg font-serif font-semibold text-center ${
+                      isActive("/request-course") ? "text-yellow-500" : ""
+                    }`}
+                  >
+                    Request a Course
+                  </Link>
 
-                <Link
-                  to={"/contact-us"}
-                  onClick={handleSidebarToggle}
-                  className={`text-lg font-serif font-semibold text-center ${
-                    isActive("/contact-us") ? "text-yellow-500" : ""
-                  }`}
-                >
-                  Contact Us
-                </Link>
+                  <Link
+                    to={"/contact-us"}
+                    onClick={handleSidebarToggle}
+                    className={`text-lg font-serif font-semibold text-center ${
+                      isActive("/contact-us") ? "text-yellow-500" : ""
+                    }`}
+                  >
+                    Contact Us
+                  </Link>
 
-                <Link
-                  to={"about"}
-                  onClick={handleSidebarToggle}
-                  className={`text-lg font-serif font-semibold text-center ${
-                    isActive("/about") ? "text-yellow-500" : ""
-                  }`}
-                >
-                  About
-                </Link>
+                  <Link
+                    to={"about"}
+                    onClick={handleSidebarToggle}
+                    className={`text-lg font-serif font-semibold text-center ${
+                      isActive("/about") ? "text-yellow-500" : ""
+                    }`}
+                  >
+                    About
+                  </Link>
+                </div>
+                <div className="flex items-center justify-center w-full">
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleSidebarToggle();
+                        navigate("/sign-in");
+                      }}
+                      className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                  or
+                  <div>
+                    <button
+                      onClick={() => {
+                        navigate("/sign-up");
+                        handleSidebarToggle();
+                      }}
+                      className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
