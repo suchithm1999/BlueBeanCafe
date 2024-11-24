@@ -5,10 +5,12 @@ import { MdSunny } from "react-icons/md";
 import { RiMenuFold4Fill } from "react-icons/ri";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { RiLogoutBoxLine } from "react-icons/ri";
 
 const Header = () => {
   const dispatch = useDispatch();
   const { theme } = useSelector((state) => state);
+  const isAuthenticated = true;
   const [showSidebar, toggleSidebar] = useState(false);
   const navigate = useNavigate();
 
@@ -106,31 +108,59 @@ const Header = () => {
                     About
                   </Link>
                 </div>
-                <div className="flex items-center justify-center w-full">
-                  <div>
-                    <button
-                      onClick={() => {
-                        handleSidebarToggle();
-                        navigate("/sign-in");
-                      }}
-                      className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
-                    >
-                      Sign In
-                    </button>
+                {isAuthenticated ? (
+                  <div className="flex items-center justify-center w-full">
+                    <div>
+                      <button
+                        onClick={() => {
+                          handleSidebarToggle();
+                          navigate("/profile");
+                        }}
+                        className="p-2 px-4 rounded text-sm text-yellow-500 font-semibold w-fit right-0 font-serif m-2"
+                      >
+                        Profile
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          // Add logout logic
+                          // navigate("/sign-up");
+                          handleSidebarToggle();
+                        }}
+                        className="p-2 px-4 rounded flex items-center gap-1 text-sm text-black font-semibold w-fit right-0 font-serif m-2"
+                      >
+                        <RiLogoutBoxLine /> Logout
+                      </button>
+                    </div>
                   </div>
-                  or
-                  <div>
-                    <button
-                      onClick={() => {
-                        navigate("/sign-up");
-                        handleSidebarToggle();
-                      }}
-                      className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
-                    >
-                      Sign Up
-                    </button>
+                ) : (
+                  <div className="flex items-center justify-center w-full">
+                    <div>
+                      <button
+                        onClick={() => {
+                          handleSidebarToggle();
+                          navigate("/sign-in");
+                        }}
+                        className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
+                      >
+                        Sign In
+                      </button>
+                    </div>
+                    or
+                    <div>
+                      <button
+                        onClick={() => {
+                          navigate("/sign-up");
+                          handleSidebarToggle();
+                        }}
+                        className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

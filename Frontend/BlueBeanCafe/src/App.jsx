@@ -12,6 +12,10 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
+import CoursePage from "./pages/CoursePage";
+import Profile from "./pages/Profile";
+import ChangePassword from "./pages/ChangePassword";
+import UpdateProfile from "./pages/UpdateProfile";
 
 function App() {
   const { theme } = useSelector((state) => state);
@@ -26,8 +30,12 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/change-password" element={<ChangePassword />} />
+            <Route path="/update-profile" element={<UpdateProfile />} />
             <Route path="/forgot-password" element={<ForgetPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/course/:id" element={<CoursePage />} />
             <Route path="/request-course" element={<RequestCourse />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/about" element={<AboutUs />} />
