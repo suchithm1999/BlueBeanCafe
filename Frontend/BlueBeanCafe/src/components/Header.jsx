@@ -1,185 +1,151 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../Store/ThemeSlice";
-import { MdDarkMode } from "react-icons/md";
-import { MdSunny } from "react-icons/md";
-import { RiMenuFold4Fill } from "react-icons/ri";
+import { logout } from "../Store/AuthSlice";
+import { MdDarkMode, MdSunny, MdMenu, MdClose } from "react-icons/md";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const { theme } = useSelector((state) => state);
-  const isAuthenticated = true;
-  const [showSidebar, toggleSidebar] = useState(false);
+  const { theme } = useSelector((state) => state.theme);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
   const location = useLocation();
 
-  const handleSidebarToggle = () => {
-    toggleSidebar(!showSidebar);
+  const isActive = (path) => location.pathname === path;
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/sign-in");
+    setIsMenuOpen(false);
   };
 
-  const currentPath = location.pathname;
-
-  const isActive = (path) => currentPath === path;
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Courses", path: "/courses" },
+    { name: "Request", path: "/request-course" },
+    { name: "Contact", path: "/contact-us" },
+    { name: "About", path: "/about" },
+  ];
 
   return (
-    <>
-      <div className="flex">
-        <button
-          className="p-2 px-2 rounded fixed bg-yellow-500 text-2xl text-black right-0 mr-5 my-5 hover:bg-yellow-400 active:bg-yellow-500"
-          onClick={() => dispatch(toggleTheme())}
-        >
-          {theme === "light" ? <MdSunny /> : <MdDarkMode />}
-        </button>
-      </div>
-      <div className="relative">
-        {showSidebar && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10"
-            onClick={handleSidebarToggle}
-          ></div>
-        )}
+    <nav className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm sticky top-0 z-50 font-sans transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
+            <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">BlueBean<span className="text-blue-600 dark:text-blue-400">Cafe</span></span>
+          </Link>
 
-        <div
-          className={` bg-white dark:bg-gray-800 md:w-1/5 w-4/5 ease-in-out fixed h-full transition-all duration-300 ${
-            showSidebar ? "left-0" : "md:-left-1/4 -left-full"
-          } top-0 z-20`}
-        >
-          {/* sidebar content */}
-          <div className="dark:text-gray-300 text-gray-800 h-full">
-            <div className="text-2xl p-2 text-center font-sans font-bold">
-              Blue Bean Cafe
-            </div>
-            <div className="border border-gray-700 border-b border-y-2"></div>
-            <div className="flex flex-col justify-between h-full">
-              <div className="mt-8 h-full flex flex-col gap-96">
-                <div
-                  className={`flex gap-4 p-2 px-4 items-start mt-2 flex-col dark:text-gray-200 text-gray-600`}
+          {/* Desktop Nav */}
+          <div className="hidden md:flex space-x-8 items-center">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`font-medium transition-colors duration-200 ${isActive(link.path)
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop Right Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => dispatch(toggleTheme())}
+              className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none"
+              aria-label="Toggle Theme"
+            >
+              {theme === "light" ? <MdSunny className="text-yellow-500 text-xl" /> : <MdDarkMode className="text-blue-400 text-xl" />}
+            </button>
+
+            {isAuthenticated ? (
+              <div className="flex items-center gap-4">
+                <button onClick={() => navigate("/profile")} className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+                  {user?.avatar && <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />}
+                  Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 bg-gray-900 dark:bg-gray-700 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
                 >
-                  <Link
-                    to={"/"}
-                    onClick={handleSidebarToggle}
-                    className={`text-lg font-serif font-semibold text-center ${
-                      isActive("/") ? "text-yellow-500" : ""
-                    }`}
-                  >
-                    Home
-                  </Link>
-
-                  <Link
-                    to={"/courses"}
-                    onClick={handleSidebarToggle}
-                    className={`text-lg font-serif font-semibold text-center ${
-                      isActive("/courses") ? "text-yellow-500" : ""
-                    }`}
-                  >
-                    Browse All Courses
-                  </Link>
-
-                  <Link
-                    to={"request-course"}
-                    onClick={handleSidebarToggle}
-                    className={`text-lg font-serif font-semibold text-center ${
-                      isActive("/request-course") ? "text-yellow-500" : ""
-                    }`}
-                  >
-                    Request a Course
-                  </Link>
-
-                  <Link
-                    to={"/contact-us"}
-                    onClick={handleSidebarToggle}
-                    className={`text-lg font-serif font-semibold text-center ${
-                      isActive("/contact-us") ? "text-yellow-500" : ""
-                    }`}
-                  >
-                    Contact Us
-                  </Link>
-
-                  <Link
-                    to={"about"}
-                    onClick={handleSidebarToggle}
-                    className={`text-lg font-serif font-semibold text-center ${
-                      isActive("/about") ? "text-yellow-500" : ""
-                    }`}
-                  >
-                    About
-                  </Link>
-                </div>
-                {isAuthenticated ? (
-                  <div className="flex items-center justify-center w-full">
-                    <div>
-                      <button
-                        onClick={() => {
-                          handleSidebarToggle();
-                          navigate("/profile");
-                        }}
-                        className="p-2 px-4 rounded text-sm text-yellow-500 font-semibold w-fit right-0 font-serif m-2"
-                      >
-                        Profile
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        onClick={() => {
-                          // Add logout logic
-                          // navigate("/sign-up");
-                          handleSidebarToggle();
-                        }}
-                        className="p-2 px-4 rounded flex items-center gap-1 text-sm text-black font-semibold w-fit right-0 font-serif m-2"
-                      >
-                        <RiLogoutBoxLine /> Logout
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center w-full">
-                    <div>
-                      <button
-                        onClick={() => {
-                          handleSidebarToggle();
-                          navigate("/sign-in");
-                        }}
-                        className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
-                      >
-                        Sign In
-                      </button>
-                    </div>
-                    or
-                    <div>
-                      <button
-                        onClick={() => {
-                          navigate("/sign-up");
-                          handleSidebarToggle();
-                        }}
-                        className="p-2 px-4 rounded text-sm bg-yellow-500 text-black font-semibold w-fit right-0 font-serif m-2 hover:bg-yellow-400 active:bg-yellow-500"
-                      >
-                        Sign Up
-                      </button>
-                    </div>
-                  </div>
-                )}
+                  <RiLogoutBoxLine /> Logout
+                </button>
               </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button onClick={() => navigate("/sign-in")} className="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Sign In</button>
+                <button onClick={() => navigate("/sign-up")} className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
+                  Sign Up
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center gap-4">
+            <button
+              onClick={() => dispatch(toggleTheme())}
+              className="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
+            >
+              {theme === "light" ? <MdSunny className="text-yellow-500" /> : <MdDarkMode className="text-blue-400" />}
+            </button>
+            <button
+              onClick={toggleMenu}
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none"
+            >
+              {isMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+          <div className="px-4 pt-2 pb-6 space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                onClick={() => setIsMenuOpen(false)}
+                className={`block px-3 py-3 rounded-md text-base font-medium ${isActive(link.path)
+                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+                  }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="border-t border-gray-100 dark:border-gray-800 my-2 pt-2">
+              {isAuthenticated ? (
+                <>
+                  <button onClick={() => { navigate("/profile"); setIsMenuOpen(false); }} className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Profile</button>
+                  <button onClick={handleLogout} className="flex w-full items-center gap-2 px-3 py-3 text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md">
+                    <RiLogoutBoxLine /> Logout
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col gap-2 mt-2">
+                  <button onClick={() => { navigate("/sign-in"); setIsMenuOpen(false); }} className="w-full text-center py-2 border border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 rounded-lg font-semibold">Sign In</button>
+                  <button onClick={() => { navigate("/sign-up"); setIsMenuOpen(false); }} className="w-full text-center py-2 bg-blue-600 text-white rounded-lg font-semibold shadow">Sign Up</button>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        <button
-          className={`absolute rounded top-5 md:text-4xl text-3xl p-1 z-30 ${
-            showSidebar ? "md:left-[21%] left-[70%]" : "left-5"
-          } transition-all duration-300 bg-yellow-500 text-black md:!bg-transparent md:text-yellow-500`}
-          onClick={handleSidebarToggle}
-        >
-          <RiMenuFold4Fill
-            className={`md:p-0 transform ${
-              showSidebar ? "scale-x-[-1]" : "scale-x-100"
-            }`}
-          />
-        </button>
-      </div>
-    </>
+      )}
+    </nav>
   );
 };
 

@@ -3,81 +3,43 @@ import { BiLogoGmail } from "react-icons/bi";
 import { BsInstagram } from "react-icons/bs";
 
 const Footer = () => {
-  const openLinkedIn = () => {
-    window.open("https://www.linkedin.com/in/suchith-m", "_blank");
-  };
+  const SOCIAL_LINKS = [
+    { icon: <AiFillLinkedin />, action: () => window.open("https://www.linkedin.com/in/suchith-m", "_blank") },
+    { icon: <AiFillGithub />, action: () => window.open("https://github.com/suchithm1999", "_blank") },
+    { icon: <BsInstagram />, action: () => window.open("https://www.instagram.com/suchithshetty_", "_blank") },
+    { icon: <BiLogoGmail />, action: () => window.open("mailto:suchithm1999@gmail.com", "_blank") },
+  ];
 
-  const openInstagram = () => {
-    window.open("https://www.instagram.com/suchithshetty_", "_blank");
-  };
-
-  const openGmail = () => {
-    const emailAddress = "suchithm1999@gmail.com";
-    const mailtoLink = `mailto:${emailAddress}`;
-    window.open(mailtoLink, "_blank");
-  };
-
-  const openGithub = () => {
-    window.open("https://github.com/suchithm1999", "_blank");
-  };
   return (
-    <div className="bg-yellow-500 text-black p-8 gap-2 w-full flex items-center justify-center">
-      <div className="">
-        <img
-          className="w-20 h-20 rounded-full border-2 border-gray-900 object-cover bg-gray-900"
-          src="/src/assets/logo.svg"
-        />
-      </div>
+    <footer className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 py-12 border-t border-gray-100 dark:border-gray-800 font-sans transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
 
-      <div>
-        <div className="p-2 border-x-0 border-t-0"></div>
-        <div className="w-full">
-          <div className="flex items-center justify-center flex-col gap-4">
-            <div className="flex gap-3 text-xl cursor-pointer">
-              <AiFillLinkedin
-                tabIndex={0}
-                onClick={openLinkedIn}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.keyCode === 13) {
-                    openLinkedIn();
-                  }
-                }}
-              />
-              <AiFillGithub
-                tabIndex={0}
-                onClick={openGithub}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.keyCode === 13) {
-                    openGithub();
-                  }
-                }}
-              />
-              <BsInstagram
-                tabIndex={0}
-                onClick={openInstagram}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.keyCode === 13) {
-                    openInstagram();
-                  }
-                }}
-              />
-              <BiLogoGmail
-                tabIndex={0}
-                onClick={openGmail}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.keyCode === 13) {
-                    openGmail();
-                  }
-                }}
-              />
-            </div>
-            <span className="text-xs font-serif text-gray-900">
-              Copyright © {new Date().getFullYear()} M Suchith
-            </span>
+        {/* Logo & Copyright */}
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
+            <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">BlueBean<span className="text-blue-600 dark:text-blue-400">Cafe</span></span>
           </div>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            © {new Date().getFullYear()} M Suchith. All rights reserved.
+          </p>
+        </div>
+
+        {/* Social Icons */}
+        <div className="flex gap-6">
+          {SOCIAL_LINKS.map((item, index) => (
+            <button
+              key={index}
+              onClick={item.action}
+              className="text-2xl text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-white hover:scale-110 transition-all duration-300"
+              aria-label="Social Link"
+            >
+              {item.icon}
+            </button>
+          ))}
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
 
