@@ -1,69 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import { MdDelete, MdEdit, MdCameraAlt } from "react-icons/md";
+import { FaUser, FaEnvelope, FaCalendarAlt, FaPlay, FaClock, FaStar } from "react-icons/fa";
+import { AuthService } from "../services/AuthService";
+import { updateUserPlaylist } from "../Store/AuthSlice";
 
 const Profile = () => {
-  const playlists = [
-    {
-      id: "2",
-      title: "State and Props",
-      videoUrl: "https://www.example.com/video2.mp4",
-      duration: "20 min",
-      description:
-        "Learn about State and Props, which are crucial concepts in React for managing and passing data between components.",
-    },
-    {
-      id: "3",
-      title: "Component Lifecycle",
-      videoUrl: "https://www.example.com/video3.mp4",
-      duration: "18 min",
-      description:
-        "Understand the lifecycle methods of a React component and how to utilize them for better control of your component's behavior.",
-    },
-    {
-      id: "4",
-      title: "Hooks Overview",
-      videoUrl: "https://www.example.com/video4.mp4",
-      duration: "25 min",
-      description:
-        "An overview of React hooks, including useState, useEffect, and custom hooks.",
-    },
-    {
-      id: "5",
-      title: "Introduction to React",
-      videoUrl: "https://www.youtube.com/embed/nTKZ9WNZHoE",
-      duration: "15 min",
-      description:
-        "An introduction to React, its features, and how to set up your first React application.",
-    },
-    {
-      id: "6",
-      title: "State and Props",
-      videoUrl: "https://www.example.com/video2.mp4",
-      duration: "20 min",
-      description:
-        "Learn about State and Props, which are crucial concepts in React for managing and passing data between components.",
-    },
-    {
-      id: "7",
-      title: "Component Lifecycle",
-      videoUrl: "https://www.example.com/video3.mp4",
-      duration: "18 min",
-      description:
-        "Understand the lifecycle methods of a React component and how to utilize them for better control of your component's behavior.",
-    },
-    {
-      id: "8",
-      title: "Hooks Overview",
-      videoUrl: "https://www.example.com/video4.mp4",
-      duration: "25 min",
-      description:
-        "An overview of React hooks, including useState, useEffect, and custom hooks.",
-    },
-  ];
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [imageSrc, setImageSrc] = useState(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (!user) return null;
+
+  const handleRemoveFromPlaylist = async (courseId) => {
+    const result = await AuthService.removeFromPlaylist(courseId);
+    if (result.success) {
+      const updatedPlaylist = user.playlist.filter(p => p.id !== courseId);
+      dispatch(updateUserPlaylist(updatedPlaylist));
+    }
+  };
 
   const imageUploadHandler = (e) => {
     const file = e.target.files[0];
@@ -77,104 +40,140 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex justify-center font-serif">
-      <div className="max-w-screen-lg w-full min-h-screen py-16 p-2 md:p-16">
-        <div className="text-2xl text-center md:text-left font-bold dark:text-yellow-500">
-          Profile
-        </div>
-        <div className="flex flex-col justify-between md:flex-row mt-4">
-          <div className="mt-4 flex justify-center flex-col items-center">
-            <div className="mt-4 flex justify-center flex-col items-center">
-              {imageSrc ? (
-                <img
-                  className="w-36 h-36 rounded-full border-2 bg-gray-600 border-gray-900 object-cover"
-                  src={imageSrc}
-                  alt="Avatar"
-                />
-              ) : (
-                <div className="w-36 font-serif font-semibold text-sm h-36 rounded-full border-2 bg-gray-600 border-gray-900 flex items-center justify-center text-white">
-                  Add Image
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans transition-colors duration-300 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-12">
+
+        {/* Profile Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden transition-colors duration-300">
+          <div className="h-32 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-900 dark:to-blue-700"></div>
+          <div className="px-8 pb-8 flex flex-col md:flex-row gap-8 -mt-16">
+
+            {/* Avatar Section */}
+            <div className="flex flex-col items-center">
+              <div className="relative group">
+                <div className="w-36 h-36 rounded-full border-4 border-white dark:border-gray-800 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 overflow-hidden shadow-md">
+                  {imageSrc || user.avatar ? (
+                    <img src={imageSrc || user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <FaUser className="text-5xl" />
+                  )}
                 </div>
-              )}
-            </div>
-            <input
-              type="file"
-              id="profileImage"
-              accept="image/*"
-              className="hidden"
-              onChange={imageUploadHandler}
-            />
-            <label
-              htmlFor="profileImage"
-              className="mt-4 cursor-pointer text-yellow-500 active:text-yellow-600"
-            >
-              Change Photo
-            </label>
-          </div>
-          <div className="p-8 gap-8 flex flex-col text-justify md:w-3/4">
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-3 items-center">
-                <span className="font-bold font-serif">Name:</span>
-                <span className="text-gray-700 dark:text-gray-300 font-light">
-                  M Suchith
-                </span>
-              </div>
-              <div className="flex gap-3 items-center">
-                <span className="font-bold font-serif">Email:</span>
-                <span className="text-gray-700 dark:text-gray-300 font-light">
-                  suchithm1999@gmail.com
-                </span>
-              </div>
-              <div className="flex gap-3 items-center">
-                <span className="font-bold font-serif">Created At:</span>
-                <span className="text-gray-700 dark:text-gray-300 font-light">
-                  {new Date().toISOString().split("T")[0]}
-                </span>
-              </div>
-            </div>
-            <div className="flex gap-2 text-sm text-black">
-              <button
-                onClick={() => navigate("/update-profile")}
-                className="p-2 bg-gray-200 rounded active:bg-gray-400 hover:bg-gray-300"
-              >
-                Update Profile
-              </button>
-              <button
-                onClick={() => navigate("/change-password")}
-                className="p-2 bg-gray-200 rounded active:bg-gray-400 hover:bg-gray-300"
-              >
-                Change Password
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="border-0 border-b-2 mt-8 dark:border-gray-300 border-gray-900 text-xl font-serif font-bold">
-          Playlist
-        </div>
-        <div className="flex flex-wrap gap-4 !mt-4 m-16 md:m-0 justify-starts">
-          {playlists.map((playlist, index) => (
-            <>
-              <div className="w-full md:w-52 border hover:-translate-y-1 duration-100 cursor-pointer border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                <img
-                  src={imageSrc}
-                  alt="Card Thumbnail"
-                  className="w-full h-36 object-cover"
+                <label htmlFor="profileImage" className="absolute bottom-2 right-2 p-2 bg-blue-600 text-white rounded-full cursor-pointer shadow-lg hover:bg-blue-700 hover:scale-110 transition-all">
+                  <MdCameraAlt />
+                </label>
+                <input
+                  type="file"
+                  id="profileImage"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={imageUploadHandler}
                 />
-                <div className="flex justify-between items-center p-4 bg-white">
-                  <button className="bg-yellow-400 hover:bg-yellow-500 text-xs text-black py-2 px-4 rounded font-semibold">
-                    Watch Now
-                  </button>
-                  <button
-                    // onClick={onDelete}
-                    className="text-gray-400 hover:text-gray-600 text-2xl"
-                  >
-                    <MdDelete />
-                  </button>
+              </div>
+              <div className="mt-4 text-center md:hidden">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
+                <p className="text-blue-600 dark:text-blue-400 text-sm">Student Developer</p>
+              </div>
+            </div>
+
+            {/* Info Section */}
+            <div className="flex-1 pt-4 md:pt-16 space-y-6">
+              <div className="hidden md:block">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
+                <p className="text-blue-600 dark:text-blue-400 font-medium">Student Developer</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
+                    <FaEnvelope />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Email Address</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{user.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
+                    <FaCalendarAlt />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Joined</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{new Date(user.joinedAt || Date.now()).toLocaleDateString()}</p>
+                  </div>
                 </div>
               </div>
-            </>
-          ))}
+
+              <div className="flex flex-wrap gap-3 pt-2">
+                <button
+                  onClick={() => navigate("/update-profile")}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-sm"
+                >
+                  <MdEdit /> Edit Profile
+                </button>
+                <button
+                  onClick={() => navigate("/change-password")}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-white rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-sm"
+                >
+                  Change Password
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Playlist Section */}
+        <div>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 pl-2 border-l-4 border-blue-600">My Playlist</h3>
+          {user?.playlist && user.playlist.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {user.playlist.map((course) => (
+                <div
+                  key={course.id}
+                  onClick={() => navigate(`/course/${course.id}`)}
+                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:border dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+                >
+                  <div className="relative h-36 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                    <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <button className="absolute inset-0 m-auto w-10 h-10 bg-white/90 dark:bg-black/60 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity transform scale-75 group-hover:scale-100">
+                      <FaPlay className="pl-1" size={14} />
+                    </button>
+                    <span className="absolute top-2 right-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1">
+                      <FaClock /> {course.duration || "N/A"}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">{course.category}</span>
+                      <div className="flex items-center gap-1 text-[10px] text-yellow-500 font-bold">
+                        <FaStar /> {course.rating}
+                      </div>
+                    </div>
+                    <h4 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-2 mb-3">{course.title}</h4>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                      <button onClick={() => navigate(`/course/${course.id}`)} className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">Watch Now</button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveFromPlaylist(course.id);
+                        }}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <MdDelete size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">Your playlist is empty.</p>
+              <button onClick={() => navigate("/courses")} className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Browse Courses</button>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );
