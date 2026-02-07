@@ -31,6 +31,7 @@ export class AuthService {
                 email: user.email,
                 avatar: user.avatar,
                 playlist: user.playlist,
+                role: user.role,
                 joinedAt: user.createdAt,
             },
         };

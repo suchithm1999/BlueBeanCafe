@@ -16,8 +16,10 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
+    role: "Student Developer"
   });
+  const [roleType, setRoleType] = useState("Student Developer");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,7 +42,7 @@ const SignUp = () => {
     setError(null);
 
     try {
-      const result = await AuthService.signup(formData.name, formData.email, formData.password, imageSrc);
+      const result = await AuthService.signup(formData.name, formData.email, formData.password, imageSrc, formData.role);
       if (result.success) {
         dispatch(loginSuccess(result.user));
         navigate("/");
@@ -151,6 +153,62 @@ const SignUp = () => {
                 placeholder="Password"
               />
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="role" className="sr-only">Role</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaUser className="text-gray-400" />
+              </div>
+              <select
+                id="role"
+                name="roleType"
+                value={roleType}
+                onChange={(e) => {
+                  const selectedRole = e.target.value;
+                  setRoleType(selectedRole);
+                  if (selectedRole !== "Other") {
+                    setFormData({ ...formData, role: selectedRole });
+                  } else {
+                    setFormData({ ...formData, role: "" });
+                  }
+                }}
+                className="appearance-none rounded-lg relative block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors cursor-pointer bg-none"
+              >
+                <option value="Student Developer">Student Developer</option>
+                <option value="Senior Developer">Senior Developer</option>
+                <option value="Instructor">Instructor</option>
+                <option value="Hobbyist">Hobbyist</option>
+                <option value="Other">Other (Specify)</option>
+              </select>
+              {/* Custom Chevron Icon */}
+              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500 dark:text-gray-400">
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
+
+            {roleType === "Other" && (
+              <div className="mt-3 relative animate-fadeIn">
+                <label htmlFor="customRole" className="sr-only">Specify Role</label>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-400 text-xs">➜</span>
+                </div>
+                <input
+                  id="customRole"
+                  name="role"
+                  type="text"
+                  required
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="appearance-none rounded-lg relative block w-full pl-8 pr-3 py-3 border border-blue-300 dark:border-blue-500 bg-blue-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
+                  placeholder="Please specify your role"
+                  autoFocus
+                />
+              </div>
+            )}
           </div>
 
           <div>

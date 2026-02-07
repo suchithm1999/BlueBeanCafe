@@ -71,7 +71,7 @@ const Profile = () => {
               </div>
               <div className="mt-4 text-center md:hidden">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
-                <p className="text-blue-600 dark:text-blue-400 text-sm">Student Developer</p>
+                <p className="text-blue-600 dark:text-blue-400 text-sm">{user.role || 'Student Developer'}</p>
               </div>
             </div>
 
@@ -79,7 +79,7 @@ const Profile = () => {
             <div className="flex-1 pt-4 md:pt-16 space-y-6">
               <div className="hidden md:block">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{user.name}</h2>
-                <p className="text-blue-600 dark:text-blue-400 font-medium">Student Developer</p>
+                <p className="text-blue-600 dark:text-blue-400 font-medium">{user.role || 'Student Developer'}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

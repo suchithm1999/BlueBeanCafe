@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -28,6 +28,12 @@ api.interceptors.response.use(
     },
     async (error) => {
         const originalRequest = error.config;
+
+        // Skip 401 interception for login, signup, and refresh endpoints to avoid infinite loops or unnecessary reloads
+        if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/signup') || originalRequest.url.includes('/auth/refresh')) {
+            return Promise.reject(error);
+        }
+
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {

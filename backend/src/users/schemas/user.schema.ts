@@ -20,6 +20,9 @@ export class User {
     @Prop({ type: [Object], default: [] })
     playlist: any[];
 
+    @Prop({ default: 'Student Developer' })
+    role: string;
+
     @Prop()
     refreshToken: string;
 }

@@ -19,13 +19,14 @@ export const AuthService = {
         }
     },
 
-    signup: async (name, email, password, avatar) => {
+    signup: async (name, email, password, avatar, role) => {
         try {
             const response = await api.post('/auth/signup', {
                 name,
                 email,
                 password,
-                avatar // Optional
+                avatar, // Optional
+                role // Optional, defaults to Student Developer
             });
             if (response.data.accessToken) {
                 localStorage.setItem('accessToken', response.data.accessToken);
